@@ -158,6 +158,28 @@ with col3:
         st.session_state.messages.clear()
         st.rerun()
 
+
+CALENDAR_URL = "https://calendar.google.com/calendar/u/0?cid=YzI5MzFiM2U1M2Y4YTFiMDI1ZWI5MjM5MmM0N2UzZjI1MTI5ZWZhNjdkN2FjNmNhZjU0OGMwYmIyYzdkYTk0NUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t"
+
+# 📆 Open Calendar button (full width)
+st.markdown("<br>", unsafe_allow_html=True)
+# Open Calendar button (opens in new tab)
+st.markdown(f"""
+<a href="{CALENDAR_URL}" target="_blank">
+    <button style='width: 100%;
+                   padding: 12px 0;
+                   font-size: 16px;
+                   border: none;
+                   border-radius: 5px;
+                   background-color: #007bff;
+                   color: white;
+                   font-weight: bold;
+                   cursor: pointer;'>
+        📆 Open Calendar
+    </button>
+</a>
+""", unsafe_allow_html=True)
+
 # ---------- Footer ----------
 st.markdown("""
 ---  
