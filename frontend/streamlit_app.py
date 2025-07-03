@@ -181,11 +181,26 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ---------- Footer ----------
+# ---- Footer ----
 st.markdown("""
----  
-<div style="text-align:center;color:#666;padding:1rem;">
-  🚀 Built with FastAPI, LangGraph, and Streamlit &nbsp;|&nbsp;
-  📅 Powered by Google Calendar API &nbsp;|&nbsp;
-  🤖 AI by Google&nbsp;Gemini
+---
+<div style="text-align: center; color: #666; padding: 1rem; font-size: 15px;">
+
+  <p style="font-size: 16px;">
+    <strong>Built by</strong> 
+    <img src="https://avatars.githubusercontent.com/u/87754699?v=4" 
+         style="height: 1.5em; vertical-align: middle; border-radius: 50%; margin: 0 5px;">
+    <strong>Nitish Biswas</strong>
+  </p>
+
+  <p>
+    <img src="https://img.icons8.com/ios-filled/20/phone.png" style="vertical-align: middle;"/> +91-8979053318 &nbsp;|&nbsp;
+    <img src="https://img.icons8.com/ios-filled/20/email.png" style="vertical-align: middle;"/> <a href="mailto:nitishbiswas066@gmail.com">nitishbiswas066@gmail.com</a> &nbsp;|&nbsp;
+    <img src="https://img.icons8.com/ios-filled/20/linkedin.png" style="vertical-align: middle;"/> <a href="https://www.linkedin.com/in/nitish-biswas1/" target="_blank">LinkedIn</a> &nbsp;|&nbsp;
+    <img src="https://img.icons8.com/ios-filled/20/github.png" style="vertical-align: middle;"/> <a href="https://github.com/Nitish-Biswas" target="_blank">GitHub</a> &nbsp;|&nbsp;
+  </p>
+
 </div>
 """, unsafe_allow_html=True)
+
+
