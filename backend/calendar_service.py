@@ -111,7 +111,7 @@ class CalendarService:
                 
                 current_time += timedelta(minutes=30)  # 30-minute intervals
             
-            return available_slots[:5]  # Return top 5 slots
+            return available_slots  # Return top 5 slots
             
         except Exception as error:
             print(f"Error suggesting time slots: {error}")
