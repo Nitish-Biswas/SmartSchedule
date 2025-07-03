@@ -1,11 +1,12 @@
 import os
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from calendar_service import CalendarService
 from agent import AppointmentBookingAgent
 from datetime import datetime, timedelta
+from fastapi.responses import FileResponse, Response
 
 load_dotenv()
 
@@ -19,6 +20,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    ip = request.client.host
+    method = request.method
+    path = request.url.path
+    print(f"👀 {ip} - {method} {path}")
+    response = await call_next(request)
+    return response
 
 # Initialize services
 calendar_service = CalendarService(
@@ -49,8 +58,20 @@ async def chat(message: ChatMessage):
         return ChatResponse(response=response)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/favicon.ico")
+async def favicon():
+    return FileResponse("static/favicon.ico")
+
+@app.head("/")
+async def root_head(request: Request):
+    return Response(status_code=200)
 
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+    return {"status": "ok", "timestamp": datetime.now().isoformat()}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=10000)
