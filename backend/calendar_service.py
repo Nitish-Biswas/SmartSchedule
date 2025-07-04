@@ -27,9 +27,8 @@ class CalendarService:
             if 'T' in dt_string:
                 dt = datetime.fromisoformat(dt_string.replace('Z', '+00:00'))
             else:
-                # Parse simple format like '2025-07-04 02:00:00'
+
                 dt = datetime.strptime(dt_string, '%Y-%m-%d %H:%M:%S')
-                # Add UTC timezone if none specified
                 if dt.tzinfo is None:
                     dt = pytz.timezone('Asia/Kolkata').localize(dt)
             
@@ -42,6 +41,7 @@ class CalendarService:
         """Get busy times for the specified date range"""
         try:
             # Convert to datetime objects
+            print(f"Checking availability from {start_date} to {end_date}")
             start_dt = self._parse_datetime(start_date)
             end_dt = self._parse_datetime(end_date)
             
@@ -61,61 +61,7 @@ class CalendarService:
             print(f"Error checking availability: {error}")
             return []
     
-    def suggest_time_slots(self, date: str, duration_minutes: int = 60) -> List[Dict]:
-        """Suggest available time slots for a given date"""
-        try:
-            # Parse the date
-            if 'T' in date:
-                target_date = datetime.fromisoformat(date.replace('Z', '+00:00')).date()
-            else:
-                target_date = datetime.strptime(date, '%Y-%m-%d').date()
-            
-            # Set working hours (9 AM to 5 PM)
-            start_time = datetime.combine(target_date, datetime.min.time().replace(hour=9))
-            end_time = datetime.combine(target_date, datetime.min.time().replace(hour=17))
-            
-            # Add timezone
-            timezone = pytz.timezone('Asia/Kolkata')
-            start_time = timezone.localize(start_time)
-            end_time = timezone.localize(end_time)
-            
-            # Get busy times
-            busy_times = self.get_availability(
-                start_time.isoformat(),
-                end_time.isoformat()
-            )
-            
-            # Generate time slots
-            available_slots = []
-            current_time = start_time
-            
-            while current_time + timedelta(minutes=duration_minutes) <= end_time:
-                slot_end = current_time + timedelta(minutes=duration_minutes)
-                
-                # Check if slot conflicts with busy times
-                is_available = True
-                for busy in busy_times:
-                    busy_start = datetime.fromisoformat(busy['start'].replace('Z', '+00:00'))
-                    busy_end = datetime.fromisoformat(busy['end'].replace('Z', '+00:00'))
-                    
-                    if (current_time < busy_end and slot_end > busy_start):
-                        is_available = False
-                        break
-                
-                if is_available:
-                    available_slots.append({
-                        'start': current_time.isoformat(),
-                        'end': slot_end.isoformat(),
-                        'display': current_time.strftime('%I:%M %p')
-                    })
-                
-                current_time += timedelta(minutes=30)  # 30-minute intervals
-            
-            return available_slots  # Return top 5 slots
-            
-        except Exception as error:
-            print(f"Error suggesting time slots: {error}")
-            return []
+    
     
     def create_event(self, title: str, start_time: str, end_time: str, description: str = "") -> Dict:
         """Create a new calendar event"""
@@ -169,3 +115,76 @@ class CalendarService:
                 'success': False,
                 'message': f'Unexpected error: {str(error)}'
             }
+        
+    def get_free_intervals_for_date(self, target_date: str, skip_before: str) -> List:
+
+        # use full-day range 00:00 to 23:59
+        try:
+            # Parse the date
+            timezone = pytz.timezone('Asia/Kolkata')
+        
+            if 'T' in target_date:
+                target_date = datetime.fromisoformat(target_date.replace('Z', '+00:00')).date()
+            else:
+                target_date = datetime.strptime(target_date, '%Y-%m-%d').date()
+            if skip_before:
+                if 'T' in skip_before:
+                    skip_before = datetime.fromisoformat(skip_before.replace('Z', '+00:00')).date()
+                    skip_before = datetime.combine(skip_before, datetime.now().time())
+                    skip_before = timezone.localize(skip_before)
+                else:
+                    skip_before = datetime.strptime(skip_before, '%Y-%m-%d').date()
+                    skip_before = datetime.combine(skip_before, datetime.now().time())
+                    skip_before = timezone.localize(skip_before)
+                
+            print("skip",skip_before)
+
+            
+            start_time = datetime.combine(target_date, datetime.min.time())
+            end_time = datetime.combine(target_date, datetime.min.time().replace(hour=23, minute=59))
+            print("check0")
+            
+            # Add timezone
+            timezone = pytz.timezone('Asia/Kolkata')
+            print(timezone)
+            start_time = timezone.localize(start_time)
+            end_time = timezone.localize(end_time)
+            
+            
+            # Get busy times
+            busy_times = self.get_availability(
+                start_time.isoformat(),
+                end_time.isoformat()
+            )
+            print("check1")
+    
+            busy_sorted = sorted(busy_times, key=lambda x: x['start'])
+            print("check2")
+            free = []
+            cursor = start_time
+            print(cursor, skip_before)
+
+            print(f"strat: {start_time}, end: {end_time}, skip_before: {skip_before}")
+            for b in busy_sorted:
+                bs = datetime.fromisoformat(b['start'].replace('Z','+00:00')).astimezone(timezone)
+                be = datetime.fromisoformat(b['end'].replace('Z','+00:00')).astimezone(timezone)
+                if skip_before and cursor < skip_before:
+                    cursor = skip_before
+                    skip_before = None
+                if cursor < bs:
+                    free.append({'start': cursor, 'end': bs})
+                cursor = max(cursor, be)
+            if skip_before and cursor < skip_before:
+                cursor = skip_before
+            if cursor < end_time:
+                free.append({'start': cursor, 'end': end_time})
+            return [True,free]
+        except Exception as error:
+            print(f"Error suggesting time slots: {error}")
+            return [False,error]
+    
+
+
+
+
+        

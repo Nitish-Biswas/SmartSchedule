@@ -114,7 +114,18 @@ with st.sidebar:
     - "Book a meeting tomorrow at 2 PM"
     - "What slots are available on 12-07-2025?"
     - "Schedule a doctor appointment next Monday"
+    - "I am planning to meet my friends today"
     """)
+
+    st.markdown("### 🔧 System Status")
+    try:
+        response = requests.get(f"{BACKEND_URL}/health", timeout=5)
+        if response.status_code == 200:
+            st.success("✅ Backend Connected")
+        else:
+            st.error("❌ Backend Error")
+    except:
+        st.error("❌ Backend Offline")
 
 # ---------- Chat history ----------
 chat_container = st.container()
@@ -163,7 +174,7 @@ CALENDAR_URL = "https://calendar.google.com/calendar/u/0?cid=YzI5MzFiM2U1M2Y4YTF
 
 # 📆 Open Calendar button (full width)
 st.markdown("<br>", unsafe_allow_html=True)
-# Open Calendar button (opens in new tab)
+
 st.markdown(f"""
 <a href="{CALENDAR_URL}" target="_blank">
     <button style='width: 100%;
@@ -181,7 +192,6 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ---------- Footer ----------
-# ---- Footer ----
 st.markdown("""
 ---
 <div style="text-align: center; color: #666; padding: 1rem; font-size: 15px;">
