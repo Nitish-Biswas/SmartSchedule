@@ -19,7 +19,7 @@ class AppointmentBookingAgent:
         self.calendar_service = calendar_service
         try:
             self.llm = ChatGoogleGenerativeAI(
-                model="gemini-2.5-flash",
+                model="gemini-2.5-pro",
                 google_api_key=gemini_api_key,
                 temperature=0.7
             )
@@ -226,7 +226,7 @@ class AppointmentBookingAgent:
             ),
             Tool(
                 name="book_appointment",
-                description=("Book an appointment in the calendar. Use this tool whenever the user wants to schedule, reserve, or set up a meeting, call, event, reminder or any other thing. and it will give only the pending list not confirm the booking. "
+                description=("Book an appointment in the calendar. Use this tool whenever the user wants to schedule, reserve, or set up a meeting, call, event, reminder or any other thing. and it will not confirm the booking "
                 "Input must be a JSON object with the following keys:\n"
                 "- 'title': a short title or purpose for the appointment (string)\n"
                 "- 'start_time': the ISO format start datetime (e.g., '2025-07-04T14:00:00')\n"
