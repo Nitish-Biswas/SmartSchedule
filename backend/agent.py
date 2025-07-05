@@ -281,6 +281,7 @@ When booking appointments:
                 memory=self.memory,
                 verbose=True,
                 max_iterations=3,
+                system_message=system_message,
                 early_stopping_method="generate",
                 handle_parsing_errors="I'm sorry, I didn’t understand that. Could you rephrase or give more details?"
             )
