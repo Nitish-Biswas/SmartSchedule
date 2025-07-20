@@ -6,8 +6,6 @@ SmartSchedule is an AI-powered appointment booking assistant that integrates wit
 ---
 ## Check out the live project here: https://smartschedule-vyljaqblkun5wacwjhkhs4.streamlit.app/
 
----
-
 ## Features
 - **Conversational AI:** Book and check appointments using natural language.
 - **Google Calendar Integration:** Uses a service account for secure access.
