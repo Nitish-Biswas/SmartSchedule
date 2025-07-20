@@ -4,7 +4,7 @@
 SmartSchedule is an AI-powered appointment booking assistant that integrates with Google Calendar. Users interact with a conversational interface to check availability and book appointments, powered by Gemini LLM and Google Calendar API.
 
 ---
-## Check out the live project here: https://smartschedule-vyljaqblkun5wacwjhkhs4.streamlit.app/
+## Check out the live project here: https://smartschedule.streamlit.app/
 
 ## Features
 - **Conversational AI:** Book and check appointments using natural language.
